@@ -1,6 +1,7 @@
 import http from 'http';
 import {readFile} from 'fs/promises';
 
+
 const host = 'localhost';
 const port = 8000;
 
@@ -11,7 +12,7 @@ const requestListener = function (req, res) {
       res.writeHead(200);
       res.end(contents);
     })
-}
+} 
 
 const server = http.createServer(requestListener);
 server.listen(port, host, () => {
