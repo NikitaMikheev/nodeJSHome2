@@ -12,7 +12,18 @@ const port = 8000;
 
 const requestListener = function (req, res) {
     const route = url.parse(req.url); // запрос в формате: http://localhost:8000/page1?index.html      (? - имя файла, всё что перед - папки. Поиск идет в папке pages и по всем вложенным папкам)
+    console.log(route);
     if(route.pathname != '/favicon.ico') {
+      if(route.pathname === '/') {
+        readFile(__dirname + "/home_page.html")
+          .then(contents => {
+            res.setHeader("Content-Type", "text/html");
+            res.writeHead(200);
+            res.end(contents);
+      })
+    }
+
+    else {
       readFile(__dirname + "/pages" + route.pathname + `/${route.query}`)
       .then(contents => {
         res.setHeader("Content-Type", "text/html");
@@ -27,6 +38,7 @@ const requestListener = function (req, res) {
           res.end(contents);
         })
       })
+    }
     }
 } 
 
