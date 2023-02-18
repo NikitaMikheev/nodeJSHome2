@@ -1,20 +1,19 @@
 import http from 'http';
 import {readFile} from 'fs/promises';
 import url from 'url';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { fileURLToPath } from 'url'; // чтобы заработала константа 
+import { dirname } from 'path'; // чтобы заработала константа 
+const __filename = fileURLToPath(import.meta.url) ; // чтобы заработала константа 
+const __dirname = dirname(__filename); // чтобы заработала константа 
 
 const host = 'localhost';
 const port = 8000;
 
 
-const requestListener = function (req, res) {
+const requestListener = function (req, res) { 
     const route = url.parse(req.url); // запрос в формате: http://localhost:8000/page1?index.html      (? - имя файла, всё что перед - папки. Поиск идет в папке pages и по всем вложенным папкам)
-    console.log(route);
     if(route.pathname != '/favicon.ico') {
-      if(route.pathname === '/') {
+      if(route.pathname === '/') { // при переходе по http://localhost:8000 закинет на домашнюю страницу
         readFile(__dirname + "/home_page.html")
           .then(contents => {
             res.setHeader("Content-Type", "text/html");
@@ -24,7 +23,7 @@ const requestListener = function (req, res) {
     }
 
     else {
-      readFile(__dirname + "/pages" + route.pathname + `/${route.query}`)
+      readFile(__dirname + "/pages" + route.pathname + `/${route.query}`) // здесь закинет на запрашиваемую страницу
       .then(contents => {
         res.setHeader("Content-Type", "text/html");
         res.writeHead(200);
@@ -42,7 +41,7 @@ const requestListener = function (req, res) {
   }
 } 
 
-const server = http.createServer(requestListener);
+const server = http.createServer(requestListener); // создаем сервер
 server.listen(port, host, () => {
     console.log(`Сервер по адресу http://${host}:${port}`);
 })
