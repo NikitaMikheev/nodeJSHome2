@@ -1,17 +1,33 @@
 import http from 'http';
 import {readFile} from 'fs/promises';
-
+import url from 'url';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const host = 'localhost';
 const port = 8000;
 
+
 const requestListener = function (req, res) {
-    readFile("C:/Users/Никита/Desktop/nodeJsHomework2/nodeJSHome2/web-server/index.html")
-    .then(contents => {
-      res.setHeader("Content-Type", "text/html");
-      res.writeHead(200);
-      res.end(contents);
-    })
+    const route = url.parse(req.url); // запрос в формате: http://localhost:8000/page1?index.html      (? - имя файла, всё что перед - папки. Поиск идет в папке pages и по всем вложенным папкам)
+    if(route.pathname != '/favicon.ico') {
+      readFile(__dirname + "/pages" + route.pathname + `/${route.query}`)
+      .then(contents => {
+        res.setHeader("Content-Type", "text/html");
+        res.writeHead(200);
+        res.end(contents);
+      })
+      .catch(err => { // если путь не найден - вернет страницу с ошибкой.
+        readFile(__dirname + "/404.html")
+        .then(contents => {
+          res.setHeader("Content-Type", "text/html");
+          res.writeHead(404);
+          res.end(contents);
+        })
+      })
+    }
 } 
 
 const server = http.createServer(requestListener);
